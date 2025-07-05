@@ -1,12 +1,20 @@
 import pygame 
 pygame.init()
+from game import Game
+from player import Player
 
-# générer une fênetre 
+# générer une fênetre
 pygame.display.set_caption("Peace in our time")
 screen =pygame.display.set_mode((1080, 720))
 
 # importation des images arrière plan
 background = pygame.image.load("assets/bg.jpg")
+
+#charger le jeu
+game = Game()
+
+# chargement du joueur
+player = Player()
 
 running = True 
 
@@ -15,6 +23,9 @@ while running :
 
     # appliquer un arrière plan 
     screen.blit(background, (0, -200))
+
+    screen.blit(game.player.image, game.player.rect)
+
     pygame.display.flip()
     
     # si mon jouer ferme la fenêtre 
