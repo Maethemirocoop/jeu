@@ -1,46 +1,55 @@
-import pygame 
-pygame.init()
+from math import ceil
+
+import pygame
+
 from game import Game
-from player import Player
 
 # générer une fênetre
 pygame.display.set_caption("Peace in our time")
 screen =pygame.display.set_mode((1080, 720))
 
-# importation des images arrière plan
-background = pygame.image.load("assets/bg.jpg")
+background = pygame.image.load('assets/bg.jpg')
+banner = pygame.transform.scale(pygame.image.load('assets/banner.png'), (500, 500))
+banner_rect = banner.get_rect()
+banner_rect.x = ceil(screen.get_width() / 4)
 
-#charger le jeu
+play_button = pygame.transform.scale(pygame.image.load('assets/button.png'), (400, 150))
+play_button_rect = play_button.get_rect()
+play_button_rect.x = ceil(screen.get_width() / 3.33)
+play_button_rect.y = ceil(screen.get_height() / 2)
+
 game = Game()
+game_is_running = True
 
-# chargement du joueur
-player = Player()
+# Boucle tant que le jeu est en cours
+while game_is_running:
 
-running = True 
-
-# boucle de condition 
-while running : 
-
-    # appliquer un arrière plan 
+    # Application de l'arrière plan sur la surface
     screen.blit(background, (0, -200))
 
-    screen.blit(game.player.image, game.player.rect)
+    # Vérification si le jeu a commencé
+    if game.is_playing:
+        game.update(screen)
+    else:
+        screen.blit(play_button, play_button_rect)
+        screen.blit(banner, banner_rect)
 
-    if game.pressed.get(pygame.K_RIGHT) and game.player.rect.x < 1080 - game.player.rect.width:
-        game.player.move_right()
-    if game.pressed.get(pygame.K_LEFT) and game.player.rect.x > 0:
-        game.player.move_left()
-
-
+    # mise à jour de l'écran
     pygame.display.flip()
-    
-    # si mon jouer ferme la fenêtre 
+
+    # Boucle sur les événements
     for event in pygame.event.get():
+        # événement de fermeture de fenêtre
         if event.type == pygame.QUIT:
-            running = False
-        
-        # detection des touches lacher par le joueur 
+            game_is_running = False
+            pygame.quit()
         elif event.type == pygame.KEYDOWN:
-           game.pressed[event.key] = True
+            game.pressed[event.key] = True
+            # Détection de la barre espace
+            if event.key == pygame.K_SPACE:
+                game.player.launch_projectile()
         elif event.type == pygame.KEYUP:
             game.pressed[event.key] = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if play_button_rect.collidepoint(event.pos):
+                game.start()
