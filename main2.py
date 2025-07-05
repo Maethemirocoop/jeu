@@ -2,7 +2,7 @@ import pygame
 pygame.init()
 
 # générer une fênetre 
-pygame.display.set_caption("Comet Fall game")
+pygame.display.set_caption("Peace in our time")
 screen =pygame.display.set_mode((1080, 720))
 
 # importation des images arrière plan
